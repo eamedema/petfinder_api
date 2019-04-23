@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-function petFinder() {
-    const ctrl = this;
-}
-  
-  angular.module('MyApp')
-  .component('petFinder', {
-    template: `
-    `, // or use templateUrl
-    controller: petFinder,
-=======
 function PetfinderFeed(PetFinderService, $q) {
   // have to add $q to use promises 
 
@@ -69,5 +58,4 @@ function PetfinderFeed(PetFinderService, $q) {
     <h1>Petfinder</h1>
    `, // or use templateUrl
     controller: PetfinderFeed,
->>>>>>> 726e69d24c30b7d007fc9bf66b096568dc4a0ebc
 });
