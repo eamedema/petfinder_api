@@ -25,7 +25,8 @@ function PetFinderService($http, $q) {
             service.doAuth()
             .then( (token) => {
                 $http({
-                    url: 'https://api.petfinder.com/v2/animals?type=dog',
+                    // url: 'https://api.petfinder.com/v2/animals?type=dog',
+                    url: 'https://api.petfinder.com/v2/animals',
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -44,4 +45,4 @@ function PetFinderService($http, $q) {
 }
 angular
     .module('MyApp')
-    .service('PetFinder', ['$http', '$q', PetFinderService])
+    .service('PetFinderService', ['$http', '$q', PetFinderService])
