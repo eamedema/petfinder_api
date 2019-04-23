@@ -1,29 +1,47 @@
-function MyChildController() {
-    const ctrl = this;
-    
-    ctrl.delete = function() {
-        // Call parent's onDelete function that is passed down
-      ctrl.onDelete({me: ctrl.me});
+function PetFinderService($http, $q) {
+    const service = this;
+    service.key = 'rEKWKvPrW7HpooXYxbjymSfIAOyKcwvvhixHIIWNAYlZeLLzmv'; // Fill in here
+    service._secret = 'OlpuSV27PqFDXswHBLBMPCHuTPh6DfxauvnwNSO5'; // Fill in here
+    service.token = '';
+    service.doAuth = () => {
+        return $q(function(resolve, reject) {
+            $http({
+                url: 'https://api.petfinder.com/v2/oauth2/token',
+                data: {
+                    grant_type: 'client_credentials',
+                    client_id: service.key,
+                    client_secret: service._secret
+                },
+                method: 'POST'
+            })
+            .then( (response) =>{
+               service.token = response.data.access_token;
+               resolve(service.token);
+            });
+        })
     };
-  
-    ctrl.update = function(prop, value) {
-        // Call parent's onUpdate function that is passed down
-        ctrl.onUpdate({me: ctrl.me, prop: prop, value: value});
-    };
-  }
-  
-  angular.module('MyApp').component('myChild', {
-    template: `
-    <hr>
-    <div>
-      Name: {{$ctrl.me.name}}<br>
-      Age: {{$ctrl.me.age}} <button ng-click="$ctrl.update('age', $ctrl.me.age+1)">Add 1</button><br>
-      <button ng-click="$ctrl.delete()">Delete</button>
-    </div>`, // or use templateUrl
-    controller: MyChildController,
-    bindings: {
-      me: '<',
-      onDelete: '&',
-      onUpdate: '&'
+    service.getData = () => {
+        return $q(function(resolve, reject) {
+            service.doAuth()
+            .then( (token) => {
+                $http({
+                    url: 'https://api.petfinder.com/v2/animals?type=dog',
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                .then( (response) => {
+                    resolve(response.data.animals);
+                })
+                .catch( (err) => {
+                    console.log(err);
+                    reject(error);
+                })
+            });
+        });
     }
-});
+}
+angular
+    .module('MyApp')
+    .service('PetFinder', ['$http', '$q', PetFinderService])
